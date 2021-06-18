@@ -1,0 +1,19 @@
+{
+    "data": [{
+            "id": 1,
+            "category": "Dhuha"
+        },
+        {
+            "id": 2,
+            "category": "Taubat"
+        },
+        {
+            "id": 3,
+            "category": "Tahajud"
+        },
+        {
+            "id": 4,
+            "category": "Istikharah"
+        }
+    ]
+}

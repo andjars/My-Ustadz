@@ -1,0 +1,4 @@
+&& = memunculkan
+
+redux = state management (state dapat digunakan secara global)
+

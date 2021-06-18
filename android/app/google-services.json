@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "630248031771",
+    "firebase_url": "https://skripsi-56630-default-rtdb.firebaseio.com",
+    "project_id": "skripsi-56630",
+    "storage_bucket": "skripsi-56630.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630248031771:android:9020d07e5a938d0f3edabe",
+        "android_client_info": {
+          "package_name": "com.mydoctor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "630248031771-hclmftulg41rdphr9a3pcguh8i55tanb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCw45mJcYjBE4VaVJ7reKCRVk2kSoitxlc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "630248031771-hclmftulg41rdphr9a3pcguh8i55tanb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
