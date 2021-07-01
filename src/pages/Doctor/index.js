@@ -1,32 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import {
+  ScrollView,
   StyleSheet,
   Text,
-  View,
-  ScrollView,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import {
-  HomeProfile,
-  UstadzCategory,
-  RatedUstadz,
-  NewsItem,
   ChatBot,
   Gap,
+  HomeProfile,
+  NewsItem,
+  RatedUstadz,
+  UstadzCategory,
 } from '../../components';
-import {fonts, colors, getData, showError} from '../../utils';
-import {
-  JSONCategoryDoctor,
-  DummyUstadz2,
-  DummyUstadz1,
-  DummyUstadzah1,
-  ILDhuha,
-} from '../../assets';
 import {Fire} from '../../config';
+import {colors, fonts, showError} from '../../utils';
 
 const Doctor = ({navigation, category}) => {
   const [news, setNews] = useState([]);
   const [ustadz, setUstadz] = useState([]);
+
   useEffect(() => {
     getTopRatedUstadz();
     getNews();
@@ -44,7 +38,6 @@ const Doctor = ({navigation, category}) => {
       .limitToLast(3)
       .once('value')
       .then((res) => {
-        console.log('top rated ustadz: ', res.val());
         if (res.val()) {
           const oldData = res.val();
           const data = [];
@@ -54,7 +47,6 @@ const Doctor = ({navigation, category}) => {
               data: oldData[key],
             });
           });
-          console.log('data hasil parse: ', data);
           setUstadz(data);
         }
       })
@@ -71,7 +63,6 @@ const Doctor = ({navigation, category}) => {
         if (res.val()) {
           const data = res.val();
           const filterData = data.filter((el) => el !== null);
-          console.log('data news filter : ', filterData);
           setNews(filterData);
         }
       })
@@ -91,6 +82,7 @@ const Doctor = ({navigation, category}) => {
               Sudah Shalat Sunnah Kah hari ini?
             </Text>
           </View>
+
           <View style={styles.wrapperScroll}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View style={styles.category}>
@@ -145,6 +137,7 @@ const Doctor = ({navigation, category}) => {
                   desc={guru.data.guru}
                   university={guru.data.university}
                   avatar={{uri: guru.data.photo}}
+                  rate={guru.data.rate}
                   onPress={() => navigation.navigate('UstadzProfile', guru)}
                 />
               );

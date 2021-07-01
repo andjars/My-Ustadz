@@ -1,10 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
-import {IconStar} from '../../../assets';
-import {fonts, colors} from '../../../utils';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {colors, fonts} from '../../../utils';
 
-const RatedUstadz = ({onPress, name, desc, university, avatar}) => {
+const RatedUstadz = ({onPress, name, desc, university, avatar, rate}) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={avatar} style={styles.avatar} />
@@ -13,7 +12,7 @@ const RatedUstadz = ({onPress, name, desc, university, avatar}) => {
         <Text style={styles.category}>{university}</Text>
       </View>
       <View style={styles.rate}>
-        <Text style={styles.category2}>{desc}</Text>
+        <Text style={styles.category2}>{rate}</Text>
       </View>
     </TouchableOpacity>
   );

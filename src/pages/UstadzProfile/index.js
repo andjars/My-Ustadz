@@ -1,13 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {
-  Header,
-  Profile,
-  List,
-  Gap,
-  ProfileItem,
-  Button,
-} from '../../components';
+import {StyleSheet, View} from 'react-native';
+import {Button, Gap, Header, Profile, ProfileItem} from '../../components';
 
 const UstadzProfile = ({navigation, route}) => {
   const dataUstadz = route.params;

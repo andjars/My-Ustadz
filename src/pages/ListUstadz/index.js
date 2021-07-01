@@ -21,7 +21,6 @@ const ListUstadz = ({navigation}) => {
       .orderByChild('rate')
       .once('value')
       .then((res) => {
-        console.log('top rated ustadz: ', res.val());
         if (res.val()) {
           const oldData = res.val();
           const data = [];
@@ -31,7 +30,6 @@ const ListUstadz = ({navigation}) => {
               data: oldData[key],
             });
           });
-          console.log('data hasil parse: ', data);
           setUstadz(data);
         }
       })

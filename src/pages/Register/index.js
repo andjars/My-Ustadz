@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Header, Input, Button, Gap, Loading} from '../../components';
-import {colors, useForm, storeData, getData} from '../../utils';
+import {showMessage} from 'react-native-flash-message';
 import {ScrollView} from 'react-native-gesture-handler';
+import {Button, Gap, Header, Input, Loading} from '../../components';
 import {Fire} from '../../config';
-import {showMessage, hideMessage} from 'react-native-flash-message';
+import {colors, storeData, useForm} from '../../utils';
+import messaging from '@react-native-firebase/messaging';
 
 const Register = ({navigation}) => {
   const [form, setForm] = useForm({
@@ -13,11 +14,10 @@ const Register = ({navigation}) => {
     email: '',
     password: '',
   });
-
+  const [getToken, setGetToken] = useState('');
   const [loading, setLoading] = useState(false);
 
   const onContinue = () => {
-    console.log(form);
     setLoading(true);
     Fire.auth()
       .createUserWithEmailAndPassword(form.email, form.password)
@@ -30,6 +30,7 @@ const Register = ({navigation}) => {
           email: form.email,
           password: form.password,
           uid: success.user.uid,
+          token: getToken,
         };
         Fire.database()
           .ref('users/' + success.user.uid + '/')
@@ -37,7 +38,6 @@ const Register = ({navigation}) => {
 
         storeData('user', data);
         navigation.navigate('UploadPhoto', data);
-        console.log('register success: ', success);
       })
       .catch((error) => {
         var errorMessage = error.message;
@@ -48,9 +48,32 @@ const Register = ({navigation}) => {
           backgroundColor: colors.error,
           color: colors.white,
         });
-        console.log('error: ', error);
       });
   };
+
+  useEffect(() => {
+    messaging()
+      .requestPermission()
+      .then((authStatus) => {
+        if (
+          authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+          // eslint-disable-next-line eqeqeq
+          authStatus == messaging.AuthorizationStatus.PROVISIONAL
+        ) {
+          messaging()
+            .getToken()
+            .then((token) => {
+              console.log('message.getToken ', token);
+              setGetToken(token);
+            });
+
+          messaging().onTokenRefresh((token) => {
+            console.log('messaging.onTokenRefresh: ', token);
+          });
+        }
+      });
+  }, []);
+
   return (
     <>
       <View style={styles.page}>

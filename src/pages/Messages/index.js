@@ -22,7 +22,6 @@ const Messages = ({navigation}) => {
         const promises = await Object.keys(oldData).map(async (key) => {
           const urlUidUstadz = `guru/${oldData[key].uidPartner}`;
           const detailUstadz = await rootDB.child(urlUidUstadz).once('value');
-          console.log('detail ustadz: ', detailUstadz.val());
           data.push({
             id: key,
             detailUstadz: detailUstadz.val(),
@@ -31,15 +30,13 @@ const Messages = ({navigation}) => {
         });
 
         await Promise.all(promises);
-        console.log('new data history: ', data);
         setHistoryChat(data);
       }
     });
-  }, [user.uid]);
+  }, [user.fullName, user.uid]);
 
   const getDataUserFromLocal = () => {
     getData('user').then((res) => {
-      console.log('userlogin: ', res);
       setUser(res);
     });
   };

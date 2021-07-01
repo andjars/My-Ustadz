@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Header, ChatItem, InputChat} from '../../components';
 import {
@@ -13,6 +13,7 @@ import {Fire} from '../../config';
 
 const Chatting = ({navigation, route}) => {
   const dataUstadz = route.params;
+  const scrollViewRef = useRef();
   const [chatContent, setChatContent] = useState('');
   const [user, setUser] = useState({});
   const [chatData, setChatData] = useState([]);
@@ -24,7 +25,7 @@ const Chatting = ({navigation, route}) => {
     Fire.database()
       .ref(urlFirebase)
       .on('value', (snapshot) => {
-        console.log('data chat: ', snapshot.val());
+        // console.log('data chat: ', snapshot.val());
         if (snapshot.val()) {
           const dataSnapshot = snapshot.val();
           const allDataChat = [];
@@ -44,21 +45,22 @@ const Chatting = ({navigation, route}) => {
               data: newDataChat,
             });
           });
-          console.log('all data chat: ', allDataChat);
+          // console.log('all data chat: ', allDataChat);
           setChatData(allDataChat);
         }
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUstadz.data.uid, user.uid]);
 
   const getDataUserFromLocal = () => {
     getData('user').then((res) => {
-      console.log('userlogin: ', res);
+      // console.log('userlogin: ', res);
       setUser(res);
     });
   };
 
   const chatSend = () => {
-    console.log('user: ', user);
+    // console.log('user: ', user);
     const today = new Date();
 
     const data = {
@@ -78,6 +80,7 @@ const Chatting = ({navigation, route}) => {
       lastChatDate: setDateChat(today),
       lastChatTime: getChatTime(today),
       uidPartner: dataUstadz.data.uid,
+      token: user.token,
     };
     const dataHistoryChatForUstadz = {
       lastContentChat: chatContent,
@@ -103,7 +106,38 @@ const Chatting = ({navigation, route}) => {
       .catch((err) => {
         showError(err.message);
       });
+
+    // Kirim push notifaction
+    fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'key=AAAAaCu_v2M:APA91bGMRyW-oT39uFwZjWAM-x6EdRYXccc7kvQeH1H2B9ws3mx9i-O02ANCqm1vNu5DYUFRY-vg7VynCg95FbppCmX2QPGPuXEGYEWbJVz5CGZ2bcItG3Q4E0j12Xc63WJhNwV4KRem',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: `${dataUstadz.data.token}`,
+        soundName: 'default',
+        notification: {
+          title: `${user.fullName}`,
+          body: `${chatContent}`,
+        },
+        data: {
+          msgType: 'Chat',
+          id: `${chatID}`,
+          detailUstadz: {
+            token: `${user.token}`,
+            email: `${user.email}`,
+            fullName: `${user.fullName}`,
+            kelas: `${user.kelas}`,
+            photo: 'https://dummyimage.com/squarepopup',
+            uid: `${user.uid}`,
+          },
+        },
+      }),
+    });
   };
+
   return (
     <View style={styles.page}>
       <Header
@@ -114,7 +148,10 @@ const Chatting = ({navigation, route}) => {
         onPress={() => navigation.goBack()}
       />
       <View style={styles.content}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          ref={scrollViewRef}
+          onContentSizeChange={() => scrollViewRef.current.scrollToEnd()}>
           {chatData.map((chat) => {
             return (
               <View key={chat.id}>

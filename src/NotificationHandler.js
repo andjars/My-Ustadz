@@ -18,11 +18,11 @@ class NotificationHandler {
   }
 
   onAction(notification) {
-    console.log ('Notification action received:');
+    console.log('Notification action received:');
     console.log(notification.action);
     console.log(notification);
 
-    if(notification.action === 'Yes') {
+    if (notification.action === 'Yes') {
       PushNotification.invokeApp(notification);
     }
   }
@@ -31,7 +31,7 @@ class NotificationHandler {
   onRegistrationError(err) {
     console.log(err);
   }
-  
+
   attachRegister(handler) {
     this._onRegister = handler;
   }
