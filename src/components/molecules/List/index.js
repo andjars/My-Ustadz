@@ -7,6 +7,7 @@ import {
   IconLanguage,
   IconRate,
   IconHelp,
+  ILNullPhoto,
 } from '../../../assets';
 
 const List = ({profile, name, desc, type, time, onPress, icon}) => {
@@ -27,7 +28,14 @@ const List = ({profile, name, desc, type, time, onPress, icon}) => {
   };
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      {icon ? <Icon /> : <Image source={profile} style={styles.avatar} />}
+      {icon ? (
+        <Icon />
+      ) : (
+        <Image
+          source={profile.uri !== undefined ? profile : ILNullPhoto}
+          style={styles.avatar}
+        />
+      )}
       <View style={styles.content}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.desc}>{desc}</Text>

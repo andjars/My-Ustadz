@@ -12,10 +12,10 @@ const HomeProfile = ({onPress}) => {
 
   useEffect(() => {
     getData('user').then((res) => {
-      // console.log('data user: ', res);
       const data = res;
-      data.photo = {uri: res.photo};
+      data.photo = res?.photo?.length > 1 ? {uri: res.photo} : ILNullPhoto;
       setProfile(res);
+      console.log(new Date());
     });
   }, []);
 

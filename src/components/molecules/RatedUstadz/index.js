@@ -1,12 +1,16 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {ILNullPhoto} from '../../../assets';
 import {colors, fonts} from '../../../utils';
 
 const RatedUstadz = ({onPress, name, desc, university, avatar, rate}) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={avatar} style={styles.avatar} />
+      <Image
+        source={avatar.uri !== undefined ? avatar : ILNullPhoto}
+        style={styles.avatar}
+      />
       <View style={styles.profile}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.category}>{university}</Text>
