@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {List} from '../../components';
-import {colors, fonts, getData} from '../../utils';
 import {Fire} from '../../config';
+import {colors, fonts, getData} from '../../utils';
 
 const Messages = ({navigation}) => {
   const [user, setUser] = useState({});
@@ -44,22 +44,33 @@ const Messages = ({navigation}) => {
     <View style={styles.page}>
       <View style={styles.content}>
         <Text style={styles.title}>Messages</Text>
-        {historyChat.map((chat) => {
-          const dataUstadz = {
-            id: chat.detailUstadz.uid,
-            data: chat.detailUstadz,
-          };
-          return (
-            <List
-              key={chat.id}
-              profile={{uri: chat.detailUstadz.photo}}
-              name={chat.detailUstadz.fullName}
-              desc={chat.lastContentChat}
-              time={chat.lastChatTime}
-              onPress={() => navigation.navigate('Chatting', dataUstadz)}
-            />
-          );
-        })}
+        {historyChat
+          .map((chat) => {
+            const dataUstadz = {
+              id: chat.detailUstadz.uid,
+              data: chat.detailUstadz,
+            };
+            return (
+              <List
+                key={chat.id}
+                profile={{uri: chat.detailUstadz.photo}}
+                name={chat.detailUstadz.fullName}
+                desc={chat.lastContentChat}
+                time={chat.lastChatTime}
+                datetime={chat.lastChatDatetime}
+                onPress={() => navigation.navigate('Chatting', dataUstadz)}
+              />
+            );
+          })
+          .sort((a, b) => {
+            if (a.props.datetime <= b.props.datetime) {
+              return 1;
+            }
+            if (a.props.datetime >= b.props.datetime) {
+              return -1;
+            }
+            return 0;
+          })}
       </View>
     </View>
   );
