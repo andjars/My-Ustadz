@@ -69,7 +69,7 @@ const Chatting = ({navigation, route}) => {
       chatDate: today.getTime(),
       chatTime: getChatTime(today),
       chatContent: chatContent,
-      lastChatDatetime: new Date(),
+      lastChatDatetime: getDateTime(today),
     };
 
     const chatID = `${user.uid}-${user.fullName}_${dataUstadz.data.uid}-${dataUstadz.data.fullName}`;
@@ -92,8 +92,6 @@ const Chatting = ({navigation, route}) => {
       uidPartner: user.uid,
       lastChatDatetime: getDateTime(today),
     };
-    // console.log('data untuk dikirim: ', data);
-    // console.log('url firebase: ', dataHistoryChatForUser);
 
     //kirim ke firebase
     Fire.database()
@@ -157,7 +155,6 @@ const Chatting = ({navigation, route}) => {
           ref={scrollViewRef}
           onContentSizeChange={() => scrollViewRef.current.scrollToEnd()}>
           {chatData.map((chat) => {
-            // isDescending = true;
             return (
               <View key={chat.id}>
                 <Text style={styles.chatDate}>{chat.id}</Text>
