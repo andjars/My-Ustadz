@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
-import {IconRemovePhoto} from '../../../assets';
+import {IconRemovePhoto, ILNullPhoto} from '../../../assets';
 import {colors, fonts} from '../../../utils';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
@@ -9,12 +9,18 @@ const Profile = ({name, desc, isRemove, photo, onPress}) => {
     <View style={styles.container}>
       {!isRemove && (
         <View style={styles.borderProfile}>
-          <Image source={photo} style={styles.avatar} />
+          <Image
+            source={photo.uri !== undefined ? photo : ILNullPhoto}
+            style={styles.avatar}
+          />
         </View>
       )}
       {isRemove && (
         <TouchableOpacity style={styles.borderProfile} onPress={onPress}>
-          <Image source={photo} style={styles.avatar} />
+          <Image
+            source={photo.uri !== undefined ? photo : ILNullPhoto}
+            style={styles.avatar}
+          />
           {isRemove && <IconRemovePhoto style={styles.removePhoto} />}
         </TouchableOpacity>
       )}

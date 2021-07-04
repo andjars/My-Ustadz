@@ -13,19 +13,19 @@ const UserProfile = ({navigation}) => {
     photo: ILNullPhoto,
   });
 
-  useEffect(() => {
+  const getDataFromUserLocal = () => {
     getData('user').then((res) => {
       const data = res;
-      data.photo = {uri: res.photo};
+      data.photo = res.photo.length > 1 ? {uri: res.photo} : ILNullPhoto;
       setProfile(data);
     });
-  }, []);
+  };
 
   const signOut = () => {
     Fire.auth()
       .signOut()
       .then(() => {
-        navigation.replace('GetStarted');
+        navigation.reset({index: 0, routes: [{name: 'GetStarted'}]});
       })
       .catch((err) => {
         showMessage({
@@ -36,6 +36,14 @@ const UserProfile = ({navigation}) => {
         });
       });
   };
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      getDataFromUserLocal();
+    });
+  }, [navigation]);
+
+  console.log(profile.fullName);
 
   return (
     <View style={styles.page}>

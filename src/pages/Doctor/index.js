@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {ILNullPhoto} from '../../assets';
 import {
   ChatBot,
   Gap,
@@ -15,21 +16,24 @@ import {
   UstadzCategory,
 } from '../../components';
 import {Fire} from '../../config';
-import {colors, fonts, showError} from '../../utils';
+import {colors, fonts, getData, showError} from '../../utils';
 
 const Doctor = ({navigation, category}) => {
   const [news, setNews] = useState([]);
   const [ustadz, setUstadz] = useState([]);
+  const [profile, setProfile] = useState({
+    photo: ILNullPhoto,
+    fullName: '',
+    kelas: '',
+  });
 
-  useEffect(() => {
-    getTopRatedUstadz();
-    getNews();
-  }, []);
-  // useEffect(() => {
-  //   getData('user').then((res) => {
-  //     console.log('data user: ', res);
-  //   });
-  // }, []);
+  const getDataFromUserLocal = () => {
+    getData('user').then((res) => {
+      const data = res;
+      data.photo = res?.photo?.length > 1 ? {uri: res.photo} : ILNullPhoto;
+      setProfile(res);
+    });
+  };
 
   const getTopRatedUstadz = () => {
     Fire.database()
@@ -71,13 +75,24 @@ const Doctor = ({navigation, category}) => {
       });
   };
 
+  useEffect(() => {
+    getTopRatedUstadz();
+    getNews();
+    navigation.addListener('focus', () => {
+      getDataFromUserLocal();
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.page}>
       <View style={styles.content}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.wrapperSection}>
             <Gap height={30} />
-            <HomeProfile onPress={() => navigation.navigate('UserProfile')} />
+            <HomeProfile
+              profile={profile}
+              onPress={() => navigation.navigate('UserProfile')}
+            />
             <Text style={styles.welcome}>
               Sudah Shalat Sunnah Kah hari ini?
             </Text>
@@ -121,8 +136,7 @@ const Doctor = ({navigation, category}) => {
             </ScrollView>
           </View>
           <View style={styles.wrapperSection}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={styles.wrapperSection2}>
               <Text style={styles.sectionLabel}>Ustadz/Ustadzah Terbaik</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate('ListUstadz')}>
@@ -186,6 +200,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
   },
   wrapperSection: {paddingHorizontal: 16},
+  wrapperSection2: {flexDirection: 'row', justifyContent: 'space-between'},
   welcome: {
     fontSize: 20,
     fontFamily: fonts.primary[600],

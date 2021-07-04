@@ -40,6 +40,7 @@ const Messages = ({navigation}) => {
       setUser(res);
     });
   };
+
   return (
     <View style={styles.page}>
       <View style={styles.content}>
