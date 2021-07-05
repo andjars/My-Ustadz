@@ -6,14 +6,10 @@ import {Fire} from '../../config';
 
 const ListUstadz = ({navigation}) => {
   const [ustadz, setUstadz] = useState([]);
+  
   useEffect(() => {
     getTopRatedUstadz();
   }, []);
-  // useEffect(() => {
-  //   getData('user').then((res) => {
-  //     console.log('data user: ', res);
-  //   });
-  // }, []);
 
   const getTopRatedUstadz = () => {
     Fire.database()

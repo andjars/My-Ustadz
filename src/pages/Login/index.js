@@ -29,11 +29,11 @@ const Login = ({navigation}) => {
                 fullName: resDB.val().fullName,
                 kelas: resDB.val().kelas,
                 token: getToken,
-                password: resDB.val().password,
+                photo: resDB.val().photo,
                 uid: resDB.val().uid,
               };
-              Fire.database().ref(`users/${res.user.uid}/`).update(dataLogin);
               storeData('user', dataLogin);
+              Fire.database().ref(`users/${res.user.uid}/`).update(dataLogin);
               navigation.replace('MainApp');
             }
           });

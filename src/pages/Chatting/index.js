@@ -20,13 +20,19 @@ const Chatting = ({navigation, route}) => {
   const [chatData, setChatData] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     getDataUserFromLocal();
-    const chatID = `${user.uid}-${user.fullName}_${dataUstadz.data.uid}-${dataUstadz.data.fullName}`;
+    getDataChatting();
+    return () => {
+      isMounted = false;
+    }
+    
+    function getDataChatting() {
+      const chatID = `${user.uid}-${user.fullName}_${dataUstadz.data.uid}-${dataUstadz.data.fullName}`;
     const urlFirebase = `chatting/${chatID}/allchat/`;
     Fire.database()
       .ref(urlFirebase)
       .on('value', (snapshot) => {
-        // console.log('data chat: ', snapshot.val());
         if (snapshot.val()) {
           const dataSnapshot = snapshot.val();
           const allDataChat = [];
@@ -46,22 +52,20 @@ const Chatting = ({navigation, route}) => {
               data: newDataChat,
             });
           });
-          // console.log('all data chat: ', allDataChat);
           setChatData(allDataChat);
         }
       });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUstadz.data.uid, user.uid]);
 
   const getDataUserFromLocal = () => {
     getData('user').then((res) => {
-      // console.log('userlogin: ', res);
       setUser(res);
     });
   };
 
   const chatSend = () => {
-    // console.log('user: ', user);
     const today = new Date();
 
     const data = {

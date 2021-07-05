@@ -43,8 +43,6 @@ const UserProfile = ({navigation}) => {
     });
   }, [navigation]);
 
-  console.log(profile.fullName);
-
   return (
     <View style={styles.page}>
       <View style={styles.content}>

@@ -1,10 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import {ILNullPhoto} from '../../../assets';
-import {fonts, colors, getData} from '../../../utils';
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { colors, fonts } from '../../../utils';
 
 const HomeProfile = ({onPress, profile}) => {
-  console.log(profile);
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={profile.photo} style={styles.avatar} />
