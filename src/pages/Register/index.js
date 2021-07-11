@@ -28,7 +28,6 @@ const Register = ({navigation}) => {
           fullName: form.fullName,
           kelas: form.kelas,
           email: form.email,
-          password: form.password,
           uid: success.user.uid,
           token: getToken,
         };
