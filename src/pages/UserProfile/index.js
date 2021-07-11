@@ -5,8 +5,10 @@ import {colors, getData} from '../../utils';
 import {ILNullPhoto} from '../../assets';
 import {Fire} from '../../config';
 import {showMessage} from 'react-native-flash-message';
+import { useDispatch } from 'react-redux';
 
-const UserProfile = ({navigation}) => {
+const UserProfile = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [profile, setProfile] = useState({
     fullName: '',
     kelas: '',
@@ -22,10 +24,14 @@ const UserProfile = ({navigation}) => {
   };
 
   const signOut = () => {
+    dispatch({type: 'SET_LOADING', value: true});
     Fire.auth()
       .signOut()
       .then(() => {
-        navigation.reset({index: 0, routes: [{name: 'GetStarted'}]});
+        setTimeout(() => {
+          dispatch({type: 'SET_LOADING', value: false});
+          navigation.reset({index: 0, routes: [{name: 'GetStarted'}]});
+        }, 3000);
       })
       .catch((err) => {
         showMessage({

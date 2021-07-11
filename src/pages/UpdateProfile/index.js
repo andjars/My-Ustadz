@@ -1,14 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Header, Profile, Input, Button, Gap} from '../../components';
-import {colors, getData, storeData} from '../../utils';
+import {colors, getData, showSuccess, storeData} from '../../utils';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Fire} from '../../config';
 import {showMessage} from 'react-native-flash-message';
-import ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import {ILNullPhoto} from '../../assets';
+import { useDispatch } from 'react-redux';
 
-const UpdateProfile = ({navigation}) => {
+const UpdateProfile = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [profile, setProfile] = useState({
     fullName: '',
     kelas: '',
@@ -16,7 +18,6 @@ const UpdateProfile = ({navigation}) => {
   });
   const [password, setPassword] = useState('');
   const [photo, setPhoto] = useState(ILNullPhoto);
-  const [photoForDB, setPhotoForDB] = useState('');
 
   useEffect(() => {
     getData('user').then((res) => {
@@ -39,18 +40,23 @@ const UpdateProfile = ({navigation}) => {
         //update password
         updatePassword();
         updateProfileData();
-        navigation.replace('MainApp');
       }
     } else {
       updateProfileData();
-      navigation.replace('MainApp');
     }
   };
 
   const updatePassword = () => {
     Fire.auth().onAuthStateChanged((user) => {
       if (user) {
-        user.updatePassword(password).catch((err) => {
+        user
+        .updatePassword(password)
+          .then(() => {
+          console.log('update password')
+          showSuccess('Your password has been changed successfully');
+          navigation.replace('MainApp');
+        })
+        .catch((err) => {
           showMessage({
             message: err.message,
             type: 'default',
@@ -63,13 +69,17 @@ const UpdateProfile = ({navigation}) => {
   };
 
   const updateProfileData = () => {
+    dispatch({type: 'SET_LOADING', value: true});
     const data = profile;
-    data.photo = photoForDB;
     Fire.database()
       .ref(`users/${profile.uid}/`)
       .update(data)
       .then(() => {
         storeData('user', data);
+        setTimeout(() => {
+          dispatch({type: 'SET_LOADING', value: false});
+          navigation.replace('MainApp');
+        }, 3000);
       })
       .catch((err) => {
         showMessage({
@@ -89,21 +99,39 @@ const UpdateProfile = ({navigation}) => {
   };
 
   const getImage = () => {
-    ImagePicker.launchImageLibrary(
-      {quality: 0.5, maxWidth: 200, maxHeight: 200},
+    launchImageLibrary(
+      {includeBase64: true, quality: 0.3, maxWidth: 200, maxHeight: 200},
       (response) => {
+        // Same code as in above section!
         if (response.didCancel || response.error) {
           showMessage({
-            message: 'oops, sepertinya ada tidak memilih fotonya?',
+            message: err.message,
             type: 'default',
             backgroundColor: colors.error,
             color: colors.white,
           });
         } else {
+          const uploadFile = `data:${response.type};base64, ${response.base64}`;
           const source = {uri: response.uri};
-
-          setPhotoForDB(`data:${response.type};base64, ${response.data}`);
           setPhoto(source);
+          // save photo direct to firebase after user select photo from the gallery
+          dispatch({type: 'SET_LOADING', value: true});
+          setTimeout(async () => {
+            await Fire.database()
+              // root users (table name)
+              // success.user.uid to save data with the registered uid user
+              .ref(`users/${profile.uid}/`)
+              // save data to firebase
+              .update({photo: uploadFile});
+
+            // store data to localstorage
+            const data = profile;
+            data.photo = uploadFile;
+            storeData('user', data);
+
+            dispatch({type: 'SET_LOADING', value: false});
+            navigation.replace('MainApp');
+          }, 3000);
         }
       },
     );

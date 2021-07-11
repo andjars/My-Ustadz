@@ -3,18 +3,21 @@ import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {Header, Button, Link, Gap} from '../../components';
 import {ILNullPhoto, IconAddPhoto, IconRemovePhoto} from '../../assets';
 import {colors, fonts, storeData} from '../../utils';
-import ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import {showMessage} from 'react-native-flash-message';
 import {Fire} from '../../config';
+import { useDispatch } from 'react-redux';
 
-const UploadPhoto = ({navigation, route}) => {
+const UploadPhoto = ({ navigation, route }) => {
+  const dispatch = useDispatch();
   const {fullName, kelas, uid} = route.params;
   const [photoForDB, setPhotoForDB] = useState('');
   const [hasPhoto, setHasPhoto] = useState(false);
   const [photo, setPhoto] = useState(ILNullPhoto);
+
   const getImage = () => {
-    ImagePicker.launchImageLibrary(
-      {quality: 0.5, maxWidth: 200, maxHeight: 200},
+    launchImageLibrary(
+      {includeBase64: true, quality: 0.3, maxWidth: 200, maxHeight: 200},
       (response) => {
         if (response.didCancel || response.error) {
           showMessage({
@@ -25,8 +28,7 @@ const UploadPhoto = ({navigation, route}) => {
           });
         } else {
           const source = {uri: response.uri};
-
-          setPhotoForDB(`data:${response.type};base64, ${response.data}`);
+          setPhotoForDB(`data:${response.type};base64, ${response.base64}`);
           setPhoto(source);
           setHasPhoto(true);
         }
@@ -35,16 +37,18 @@ const UploadPhoto = ({navigation, route}) => {
   };
 
   const uploadAndContinue = () => {
+    dispatch({type: 'SET_LOADING', value: true});
     Fire.database()
       .ref('users/' + uid + '/')
       .update({photo: photoForDB});
-
     const data = route.params;
     data.photo = photoForDB;
-
     storeData('user', data);
 
-    navigation.replace('MainApp');
+    setTimeout(() => {
+      dispatch({type: 'SET_LOADING', value: false});
+      navigation.replace('MainApp');
+    }, 3000);
   };
   return (
     <View style={styles.page}>
