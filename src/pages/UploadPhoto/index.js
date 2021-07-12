@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {Header, Button, Link, Gap} from '../../components';
 import {ILNullPhoto, IconAddPhoto, IconRemovePhoto} from '../../assets';
 import {colors, fonts, storeData} from '../../utils';
-import {launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-picker';
 import {showMessage} from 'react-native-flash-message';
 import {Fire} from '../../config';
 import { useDispatch } from 'react-redux';
@@ -16,8 +16,8 @@ const UploadPhoto = ({ navigation, route }) => {
   const [photo, setPhoto] = useState(ILNullPhoto);
 
   const getImage = () => {
-    launchImageLibrary(
-      {includeBase64: true, quality: 0.3, maxWidth: 200, maxHeight: 200},
+    ImagePicker.launchImageLibrary(
+      {quality: 0.5, maxWidth: 200, maxHeight: 200},
       (response) => {
         if (response.didCancel || response.error) {
           showMessage({
@@ -28,7 +28,7 @@ const UploadPhoto = ({ navigation, route }) => {
           });
         } else {
           const source = {uri: response.uri};
-          setPhotoForDB(`data:${response.type};base64, ${response.base64}`);
+          setPhotoForDB(`data:${response.type};base64, ${response.data}`);
           setPhoto(source);
           setHasPhoto(true);
         }

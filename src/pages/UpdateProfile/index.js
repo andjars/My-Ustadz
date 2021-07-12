@@ -5,7 +5,7 @@ import {colors, getData, showSuccess, storeData} from '../../utils';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Fire} from '../../config';
 import {showMessage} from 'react-native-flash-message';
-import {launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-picker';
 import {ILNullPhoto} from '../../assets';
 import { useDispatch } from 'react-redux';
 
@@ -99,8 +99,8 @@ const UpdateProfile = ({ navigation }) => {
   };
 
   const getImage = () => {
-    launchImageLibrary(
-      {includeBase64: true, quality: 0.3, maxWidth: 200, maxHeight: 200},
+    ImagePicker.launchImageLibrary(
+      {quality: 0.5, maxWidth: 200, maxHeight: 200},
       (response) => {
         // Same code as in above section!
         if (response.didCancel || response.error) {
@@ -111,7 +111,7 @@ const UpdateProfile = ({ navigation }) => {
             color: colors.white,
           });
         } else {
-          const uploadFile = `data:${response.type};base64, ${response.base64}`;
+          const uploadFile = `data:${response.type};base64, ${response.data}`;
           const source = {uri: response.uri};
           setPhoto(source);
           // save photo direct to firebase after user select photo from the gallery
