@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Header, RatedUstadz} from '../../components';
 import {colors, showError} from '../../utils';
 import {Fire} from '../../config';
@@ -36,20 +36,22 @@ const ListUstadz = ({navigation}) => {
   return (
     <View style={styles.page}>
       <Header title="Ustadz/Ustadzah" onPress={() => navigation.goBack()} />
-      <View style={styles.coloumn}>
-        {ustadz.map((guru) => {
-          return (
-            <RatedUstadz
-              key={guru.id}
-              name={guru.data.fullName}
-              desc={guru.data.guru}
-              university={guru.data.university}
-              avatar={{uri: guru.data.photo}}
-              onPress={() => navigation.navigate('UstadzProfile', guru)}
-            />
-          );
-        })}
-      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.coloumn}>
+          {ustadz.map((guru) => {
+            return (
+              <RatedUstadz
+                key={guru.id}
+                name={guru.data.fullName}
+                desc={guru.data.guru}
+                university={guru.data.university}
+                avatar={{uri: guru.data.photo}}
+                onPress={() => navigation.navigate('UstadzProfile', guru)}
+              />
+            );
+          })}
+        </View>
+      </ScrollView>
     </View>
   );
 };

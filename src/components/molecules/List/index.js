@@ -26,6 +26,7 @@ const List = ({profile, name, desc, type, time, onPress, icon}) => {
     }
     return <IconEditProfile />;
   };
+  
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       {icon ? (

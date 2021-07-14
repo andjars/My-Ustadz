@@ -1,8 +1,8 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
-import {colors, fonts} from '../../../utils';
-import {Button} from '../../atoms';
-import {DummyUstadz2} from '../../../assets';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { ILNullPhoto } from '../../../assets';
+import { colors, fonts } from '../../../utils';
+import { Button } from '../../atoms';
 
 const DarkProfile = ({onPress, title, desc, photo}) => {
   return (
@@ -12,7 +12,7 @@ const DarkProfile = ({onPress, title, desc, photo}) => {
         <Text style={styles.name}>{title}</Text>
         <Text style={styles.desc}>{desc}</Text>
       </View>
-      <Image source={photo} style={styles.avatar} />
+      <Image source={photo.uri !== undefined ? photo : ILNullPhoto} style={styles.avatar} />
     </View>
   );
 };
