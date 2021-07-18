@@ -9,8 +9,8 @@ import {useDispatch} from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
 
 const Login = ({navigation}) => {
-  const [form, setForm] = useForm({email: '', password: ''});
   const dispatch = useDispatch();
+  const [form, setForm] = useForm({email: '', password: ''});
   const [getToken, setGetToken] = useState('');
 
   const login = () => {
@@ -28,6 +28,7 @@ const Login = ({navigation}) => {
                 email: resDB.val().email,
                 fullName: resDB.val().fullName,
                 kelas: resDB.val().kelas,
+                gender: resDB.val().gender,
                 token: getToken,
                 photo: resDB.val().photo,
                 uid: resDB.val().uid,
