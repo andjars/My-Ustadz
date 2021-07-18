@@ -1,7 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image, ActivityIndicator} from 'react-native';
-import {DummyNews1} from '../../../assets';
-import {colors, fonts} from '../../../utils';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { colors, fonts } from '../../../utils';
 
 const Loading = () => {
   return (

@@ -1,23 +1,26 @@
 import {createStore} from 'redux';
 
-// const [profile, setProfile] = useState("andjar");
-
-// setProfile("saputra")
-
 const initialState = {
   loading: false,
-  // name: 'Isra Aras',
-  // address: 'ardio',
+  message: 0
 };
 
 const reducer = (state = initialState, action) => {
-  if (action.type === 'SET_LOADING') {
-    return {
-      ...state,
-      loading: action.value,
-    };
+  switch (action.type) {
+    case 'SET_LOADING':
+      return {
+        ...state,
+        loading: action.value,
+      };
+    case 'MESSAGE_COUNT':
+      return {
+        ...state,
+        message: action.value,
+      };
+  
+    default:
+      return state;
   }
-  return state;
 };
 
 const store = createStore(reducer);

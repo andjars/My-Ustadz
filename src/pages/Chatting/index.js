@@ -1,24 +1,41 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {Header, ChatItem, InputChat} from '../../components';
+import React, { useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ILNullPhoto } from '../../assets';
+import { ChatItem, Header, InputChat } from '../../components';
+import { Fire } from '../../config';
 import {
-  fonts,
-  colors,
-  getData,
-  showError,
-  getChatTime,
-  setDateChat,
-  getDateTime,
+  colors, fonts, getChatTime, getData, getDateTime, setDateChat, showError
 } from '../../utils';
-import {Fire} from '../../config';
 
-const Chatting = ({navigation, route}) => {
+const Chatting = ({ navigation, route }) => {
   const dataUstadz = route.params;
   const scrollViewRef = useRef();
   const [chatContent, setChatContent] = useState('');
   const [user, setUser] = useState({});
   const [chatData, setChatData] = useState([]);
 
+  const trimText = (text) => {
+    let maxLength = 40;
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength).trimEnd() + ' ...';
+    } else {
+      return text;
+    }
+  };
+
+  useEffect(() => {
+    const chatId = `${user.uid}-${user.fullName}_${dataUstadz.data.uid}-${dataUstadz.data.fullName}`;
+    const urlMessage = `messages/${user.uid}-${user.fullName}/${chatId}`;
+
+    if (chatData.length > 0) {
+      if (user.uid !== undefined && dataUstadz.data.uid !== undefined) {
+        Fire.database()
+          .ref(urlMessage)
+          .update({readAt: 1});
+      }
+    }
+  }, [dataUstadz.data.uid, user.uid])
+  
   useEffect(() => {
     let isMounted = true;
     getDataUserFromLocal();
@@ -26,35 +43,36 @@ const Chatting = ({navigation, route}) => {
     return () => {
       isMounted = false;
     }
-    
+
     function getDataChatting() {
       const chatID = `${user.uid}-${user.fullName}_${dataUstadz.data.uid}-${dataUstadz.data.fullName}`;
-    const urlFirebase = `chatting/${chatID}/allchat/`;
-    Fire.database()
+      const urlFirebase = `chatting/${chatID}/allchat/`;
+      
+      Fire.database()
       .ref(urlFirebase)
       .on('value', (snapshot) => {
         if (snapshot.val()) {
-          const dataSnapshot = snapshot.val();
-          const allDataChat = [];
-          Object.keys(dataSnapshot).map((key) => {
-            const dataChat = dataSnapshot[key];
-            const newDataChat = [];
+            const dataSnapshot = snapshot.val();
+            const allDataChat = [];
+            Object.keys(dataSnapshot).map((key) => {
+              const dataChat = dataSnapshot[key];
+              const newDataChat = [];
 
-            Object.keys(dataChat).map((itemChat) => {
-              newDataChat.push({
-                id: itemChat,
-                data: dataChat[itemChat],
+              Object.keys(dataChat).map((itemChat) => {
+                newDataChat.push({
+                  id: itemChat,
+                  data: dataChat[itemChat],
+                });
+              });
+
+              allDataChat.push({
+                id: key,
+                data: newDataChat,
               });
             });
-
-            allDataChat.push({
-              id: key,
-              data: newDataChat,
-            });
-          });
-          setChatData(allDataChat);
-        }
-      });
+            setChatData(allDataChat);
+          }
+        });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUstadz.data.uid, user.uid]);
@@ -77,7 +95,6 @@ const Chatting = ({navigation, route}) => {
     };
 
     const chatID = `${user.uid}-${user.fullName}_${dataUstadz.data.uid}-${dataUstadz.data.fullName}`;
-
     const urlFirebase = `chatting/${chatID}/allchat/${setDateChat(today)}`;
     const urlMessageUser = `messages/${user.uid}-${user.fullName}/${chatID}`;
     const urlMessageUstadz = `messages/${dataUstadz.data.uid}-${dataUstadz.data.fullName}/${chatID}`;
@@ -94,6 +111,7 @@ const Chatting = ({navigation, route}) => {
       lastChatDate: setDateChat(today),
       lastChatTime: getChatTime(today),
       uidPartner: user.uid,
+      readAt: '',
       lastChatDatetime: getDateTime(today),
     };
 
@@ -126,7 +144,7 @@ const Chatting = ({navigation, route}) => {
         soundName: 'default',
         notification: {
           title: `${user.fullName}`,
-          body: `${chatContent}`,
+          body: `${trimText(chatContent)}`,
         },
         data: {
           msgType: 'Chat',
@@ -143,6 +161,7 @@ const Chatting = ({navigation, route}) => {
       }),
     });
   };
+
 
   return (
     <View style={styles.page}>
@@ -170,7 +189,7 @@ const Chatting = ({navigation, route}) => {
                       isMe={isMe}
                       text={itemChat.data.chatContent}
                       date={itemChat.data.chatTime}
-                      photo={isMe ? null : {uri: dataUstadz.data.photo}}
+                      photo={isMe ? null : dataUstadz.data.photo !== undefined ? {uri: dataUstadz.data.photo} : ILNullPhoto}
                     />
                   );
                 })}

@@ -1,7 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
-import {fonts, colors} from '../../../utils';
-import {DummyUstadz2} from '../../../assets';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { colors, fonts } from '../../../utils';
 
 const Other = ({text, date, photo}) => {
   return (
