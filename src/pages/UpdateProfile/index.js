@@ -14,10 +14,23 @@ const UpdateProfile = ({ navigation }) => {
   const [profile, setProfile] = useState({
     fullName: '',
     kelas: '',
+    gender: 'pria',
     email: '',
   });
   const [password, setPassword] = useState('');
   const [photo, setPhoto] = useState(ILNullPhoto);
+  const [itemGender] = useState([
+    {
+      id: 1,
+      label: 'Pria',
+      value: 'pria',
+    },
+    {
+      id: 2,
+      label: 'Wanita',
+      value: 'wanita',
+    },
+  ]);
 
   useEffect(() => {
     getData('user').then((res) => {
@@ -153,6 +166,14 @@ const UpdateProfile = ({ navigation }) => {
             label="Pekerjaan"
             value={profile.kelas}
             onChangeText={(value) => changeText('kelas', value)}
+          />
+          <Gap height={24} />
+          <Input
+            label="Jenis Kelamin"
+            value={profile.gender}
+            onValueChange={value => changeText('gender', value)}
+            select
+            selectItem={itemGender}
           />
           <Gap height={24} />
           <Input label="Email" value={profile.email} disable />

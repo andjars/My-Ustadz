@@ -35,6 +35,7 @@ const UploadPhoto = ({ navigation, route }) => {
       },
     );
   };
+  console.log('data route: ', route.params)
 
   const uploadAndContinue = () => {
     dispatch({type: 'SET_LOADING', value: true});
