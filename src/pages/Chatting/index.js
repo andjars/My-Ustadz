@@ -34,7 +34,13 @@ const Chatting = ({ navigation, route }) => {
           .update({readAt: 1});
       }
     }
-  }, [dataUstadz.data.uid, user.uid])
+  }, [
+    chatData.length,
+    dataUstadz.data.fullName,
+    dataUstadz.data.uid,
+    user.fullName,
+    user.uid
+  ])
   
   useEffect(() => {
     let isMounted = true;
